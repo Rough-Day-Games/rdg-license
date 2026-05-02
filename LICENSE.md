@@ -1,5 +1,6 @@
 # Rough Day Games (RDG) LICENSE
 Version 2.1
+
 ### TL;DR
 - Mods can be used in modpacks (no credit required)
 - No copying, modifying, or reusing our work
