@@ -1,0 +1,10 @@
+{
+  "name": "rdg-license",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "dependencies": {
+    "@actions/core": "^3.0.1",
+    "@octokit/plugin-throttling": "^11.0.3"
+  }
+}

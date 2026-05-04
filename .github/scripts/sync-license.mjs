@@ -7,7 +7,6 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import os from 'node:os'
 import { exec } from 'node:child_process'
-import * as github from '@actions/github'
 import { GitHub, getOctokitOptions } from '@actions/github/lib/utils.js'
 import { throttling } from '@octokit/plugin-throttling'
 import * as core from '@actions/core'
@@ -230,7 +229,7 @@ async function run() {
             await git.commit(commitMessage)
             await git.push()
 
-            const prTitle = `Update '${ licenseFileName }'`
+            const prTitle = `Update '${licenseFileName}'`
             const prBody = `This PR was created automatically due to a file change in [${sourceRepo}](${process.env.GITHUB_SERVER_URL}/${sourceRepo}).`
 
             const pr = await git.createOrUpdatePr(prTitle, prBody)
