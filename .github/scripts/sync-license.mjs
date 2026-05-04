@@ -21,8 +21,6 @@ const branchPrefix = 'repo-sync/SOURCE_REPO_NAME'
 const targetRepos = JSON.parse(process.env.TARGET_REPOS_JSON)
 
 // Octokit is the main API tool for HTTPS requests
-const Octokit = Octokit.plugin(throttling)
-
 const octokit = new Octokit({
     auth: token,
     baseUrl: 'https://api.github.com',
@@ -211,35 +209,30 @@ async function run() {
             gitEmail,
         })
 
-        try {
-            await git.initRepo()
-            await git.createPrBranch()
+        await git.initRepo()
+        await git.createPrBranch()
 
-            const destAbsPath = path.join(git.workingDir, licenseFileName)
-            await fs.mkdir(path.dirname(destAbsPath), { recursive: true })
+        const destAbsPath = path.join(git.workingDir, licenseFileName)
+        await fs.mkdir(path.dirname(destAbsPath), { recursive: true })
 
-            await fs.writeFile(destAbsPath, sourceLicense, 'utf8')
-            await git.addFile(licenseFileName)
+        await fs.writeFile(destAbsPath, sourceLicense, 'utf8')
+        await git.addFile(licenseFileName)
 
-            if (!(await git.hasChanges())) {
-                await removeDir(git.workingDir)
-                return
-            }
-
-            const commitMessage = `Update '${licenseFileName}' from ${sourceRepo}`
-            await git.commit(commitMessage)
-            await git.push()
-
-            const prTitle = `Update '${licenseFileName}'`
-            const prBody = `This PR was created automatically due to a file change in [${sourceRepo}](${process.env.GITHUB_SERVER_URL}/${sourceRepo}).`
-
-            const pr = await git.createOrUpdatePr(prTitle, prBody)
-
+        if (!(await git.hasChanges())) {
             await removeDir(git.workingDir)
-        } catch (err) {
-            console.error(`Failed for ${repo.full_name}: ${err.message}`)
-            await removeDir(git.workingDir)
+            return
         }
+
+        const commitMessage = `Update '${licenseFileName}' from ${sourceRepo}`
+        await git.commit(commitMessage)
+        await git.push()
+
+        const prTitle = `Update '${licenseFileName}'`
+        const prBody = `This PR was created automatically due to a file change in [${sourceRepo}](${process.env.GITHUB_SERVER_URL}/${sourceRepo}).`
+
+        const pr = await git.createOrUpdatePr(prTitle, prBody)
+
+        await removeDir(git.workingDir)
     })
 }
 
