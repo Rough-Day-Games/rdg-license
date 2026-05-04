@@ -40,34 +40,6 @@ jobs:
             const { data } = await github.rest.users.getByUsername({ username })
             return String(data.id)
 
-      - name: Find all repositories under RDG
-        id: target-repos
-        uses: actions/github-script@v9
-        with:
-          github-token: ${{ steps.app-token.outputs.token }}
-          script: |
-            const org = context.repo.owner
-            const sourceRepo = context.repo.repo
-
-            const repos = await github.paginate(github.rest.repos.listForOrg, {
-              org,
-              type: 'all',
-              per_page: 100,
-            })
-
-            return repos
-              .filter(repo =>
-                !repo.archived &&
-                !repo.fork &&
-                !repo.disabled &&
-                repo.name !== sourceRepo
-              )
-              .map(repo => `${org}/${repo.name}`)
-              .sort()
-
-
-
-
       - name: Find all repositories under the organization
         id: target-repos
         uses: actions/github-script@v9
