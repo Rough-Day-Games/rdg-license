@@ -228,7 +228,7 @@ async function run() {
         await git.push()
 
         const prTitle = `Update '${licenseFileName}'`
-        const prBody = `This PR was created automatically due to a file change in [${sourceRepo}](${process.env.GITHUB_SERVER_URL}/${sourceRepo}).`
+        const prBody = `This PR was created automatically due to a file change in [${org}/${sourceRepo}](${process.env.GITHUB_SERVER_URL}/${sourceRepo}).`
 
         const pr = await git.createOrUpdatePr(prTitle, prBody)
 
