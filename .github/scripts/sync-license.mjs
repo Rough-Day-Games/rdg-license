@@ -7,9 +7,9 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import os from 'node:os'
 import { exec } from 'node:child_process'
-import { Octokit } from '@octokit/core'
-import { throttling } from '@octokit/plugin-throttling'
 import * as core from '@actions/core'
+import { Octokit } from '@octokit/rest'
+import { throttling } from '@octokit/plugin-throttling'
 
 const token = process.env.GH_TOKEN
 const org = process.env.ORG
@@ -21,6 +21,8 @@ const branchPrefix = 'repo-sync/SOURCE_REPO_NAME'
 const targetRepos = JSON.parse(process.env.TARGET_REPOS_JSON)
 
 // Octokit is the main API tool for HTTPS requests
+const Octokit = Octokit.plugin(throttling)
+
 const octokit = new Octokit({
     auth: token,
     baseUrl: 'https://api.github.com',
