@@ -74,6 +74,10 @@ jobs:
             return JSON.stringify(targets)
 
 
+
+      - name: Install Node dependencies
+        run: npm ci
+
       - name: Run the license syncing script
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
