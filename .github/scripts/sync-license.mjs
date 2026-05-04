@@ -7,7 +7,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import os from 'node:os'
 import { exec } from 'node:child_process'
-import { GitHub, getOctokitOptions } from '@actions/github/lib/utils.js'
+import { Octokit } from '@octokit/core'
 import { throttling } from '@octokit/plugin-throttling'
 import * as core from '@actions/core'
 
@@ -21,8 +21,8 @@ const branchPrefix = 'repo-sync/SOURCE_REPO_NAME'
 const targetRepos = JSON.parse(process.env.TARGET_REPOS_JSON)
 
 // Octokit is the main API tool for HTTPS requests
-const Octokit = GitHub.plugin(throttling)
-const options = getOctokitOptions(token, {
+const octokit = new Octokit({
+    auth: token,
     baseUrl: 'https://api.github.com',
     throttle: {
         onRateLimit: (retryAfter) => {
@@ -36,7 +36,6 @@ const options = getOctokitOptions(token, {
     }
 })
 
-const octokit = new Octokit(options)
 const api = octokit.rest
 
 // Big Git instance for managing each target repository
